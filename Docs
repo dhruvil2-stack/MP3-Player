@@ -1,1 +1,9 @@
 DataSheets and Mathematical Computations done and stored here
+For the BQ24074 Chip, its components were chosen to supply a fast charging current of 1500 mAh.
+I_CHG = (K_ISET/R_ISET) => R_ISET = (K_ISET/I_CHG) = (890 A*Ohm / 1.5 A) = 593.33 A ≈ 590 A.
+| EN 1  | EN 2  |
+|-------|-------|
+|   0   |  0    |
+|   1   |  1    |
+|   0   |  1    |
+|   1   |  0    |
