@@ -40,7 +40,7 @@ The EN1 and EN2 pins configure the input current limit based on the USB power so
 |-----|-----|---------------------|---------------|
 | 0   | 0   | USB 100mA (SDP)     | Not Used |
 | 1   | 1   | USB 500mA           | Not Used |
-| 0   | 1   | Adapter 1.3A        | **Selected** |
+| 0   | 1   | Adapter 0.80A        | **Selected** |
 | 1   | 0   | Adapter 1.5A        | Not Used |
 
 **Selected Configuration:**
