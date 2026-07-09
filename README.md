@@ -4,6 +4,14 @@ A compact, open-source MP3 player built from the ground up. From PCB design to f
 
 ---
 
+## Documentation
+
+For detailed technical documentation including component selection, design calculations, and system architecture:
+
+📄 [Technical Documentation](docs/TECHNICAL_DOCS.md)
+
+---
+
 ## Overview
 
 This is a homemade portable MP3 player with a focus on clean audio, compact design, and hands-on learning. It plays MP3 files off a micro-SD card and features a simple playback interface with volume control and track navigation. Load up a card with your favourite tracks, plug it in, and you're good to go.
@@ -54,9 +62,3 @@ Everything you need to build your own is available in this repository:
 - **Firmware** — ESP32 code, SPI drivers, and metadata parsing
 - **Enclosure** — Tinkercad STL files for top and bottom case halves
 - **Bill of Materials** — Full parts list with component sources
-
-## Documentation
-
-For detailed technical documentation, including component selection, calculations, and design rationale, see:
-
-📄 [Technical Documentation](docs/TECHNICAL_DOCS.md)
