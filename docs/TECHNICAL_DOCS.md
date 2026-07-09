@@ -1,14 +1,55 @@
+# MP3 Player - Technical Documentation
+
+## Table of Contents
+
+- [Power Management](#power-management)
+- [Microcontroller Selection](#microcontroller-selection)
+- [Audio Decoder Selection](#audio-decoder-selection)
+- [Display Selection](#display-selection)
+- [Enclosure Design](#enclosure-design)
+
+---
+
+## Power Management
+
+### Battery Charging - BQ24074
+
+The BQ24074 was selected as the battery charging IC due to its integrated power-path management and ability to support fast charging currents up to 1.5A. The charging current is configured using an external resistor connected to the ISET pin.
+
+**Charging Current Calculation:**
+
+$$I_{CHG} = \frac{K_{ISET}}{R_{ISET}}$$
+
+$$R_{ISET} = \frac{K_{ISET}}{I_{CHG}} = \frac{890\ \text{A}\cdot\Omega}{1.5\ \text{A}} = 593.33\ \Omega \approx 590\ \Omega$$
+
+**Battery Specification:**
+
+| Parameter | Value |
+|-----------|-------|
+| Chemistry | Lithium-Ion (Li-ion) |
+| Nominal Voltage | 3.7V |
+| Maximum Voltage | 4.2V |
+| Capacity | 1000mAh |
+| Charging Current | 1.5A (Fast Charge) |
 
 **EN Pin Configuration:**
 
-The EN1 and EN2 pins provide input current limiting options, allowing the system to adapt to different USB power sources:
+The EN1 and EN2 pins configure the input current limit based on the USB power source:
 
-| EN1 | EN2 | Input Current Limit |
-|-----|-----|---------------------|
-| 0   | 0   | USB 100mA (SDP)     |
-| 1   | 1   | USB 500mA           |
-| 0   | 1   | Adapter 1.3A        |
-| 1   | 0   | Adapter 1.5A        |
+| EN1 | EN2 | Input Current Limit | Configuration |
+|-----|-----|---------------------|---------------|
+| 0   | 0   | USB 100mA (SDP)     | Not Used |
+| 1   | 1   | USB 500mA           | Not Used |
+| 0   | 1   | Adapter 1.3A        | **Selected** |
+| 1   | 0   | Adapter 1.5A        | Not Used |
+
+**Selected Configuration:**
+
+The BQ24074 is configured with **EN1 = 0** and **EN2 = 1**, setting the input current limit to **1.3A**. This configuration was chosen to:
+
+- Match the 1.5A fast-charge current while staying within safe limits
+- Allow the BQ24074's power-path to manage battery charging and system power simultaneously
+- Provide adequate headroom for system operation while charging
 
 ### Voltage Regulation - AP2112K-3.3V and AP2112K-1.8V
 
@@ -21,14 +62,28 @@ The AP2112K series LDOs were selected for voltage regulation based on the follow
 | Package | SOT-23-5 |
 | Features | Enable pin, thermal protection, short-circuit protection |
 
-The 3.3V rail powers the ESP32, ST7735 display, and logic levels. The 1.8V rail provides power for the display's internal logic.
+**Power Rails:**
+
+| Rail | Voltage | Regulator | Supply | Purpose |
+|------|---------|-----------|--------|---------|
+| 3.3V | 3.3V | AP2112K-3.3 | 3.7V Li-ion | ESP32, ST7735 display, VS1053b IOVDD, SD card, logic levels |
+| 1.8V | 1.8V | AP2112K-1.8 | 3.7V Li-ion | VS1053b core voltage (CVDD) |
 
 **Selection Rationale:**
 
-- Low dropout voltage enables efficient operation from a 3.7V Li-ion battery while maintaining stable 3.3V output
-- 600mA output capacity sufficient for both ESP32 and display simultaneously
+- Low dropout voltage (250mV typical) enables efficient operation from a 3.7V Li-ion battery while maintaining stable output voltages
+- 600mA output capacity sufficient for all onboard components
 - Enable pin allows controlled power sequencing and low-power standby modes
 - Built-in over-temperature and short-circuit protection enhance system reliability
+
+**VS1053b Power Requirements:**
+
+The VS1053b requires two separate power supplies:
+
+- **IOVDD (3.3V):** Powers the digital I/O pins and SPI interface
+- **CVDD (1.8V):** Powers the internal core processor and DSP
+
+The 1.8V rail is critical for proper VS1053b operation. The AP2112K-1.8 provides a stable, low-noise supply to ensure consistent audio decoding performance.
 
 ---
 
@@ -67,7 +122,8 @@ The VS1053b was selected as the audio codec based on the following factors:
 | Formats Supported | MP3, AAC, Ogg Vorbis, WMA, FLAC, WAV, MIDI |
 | Interface | SPI |
 | Headphone Output | Direct drive (no external amp required) |
-| Operating Voltage | 3.3V |
+| Core Voltage (CVDD) | 1.8V |
+| I/O Voltage (IOVDD) | 3.3V |
 
 **Selection Rationale:**
 
@@ -77,7 +133,18 @@ The VS1053b was selected as the audio codec based on the following factors:
 - Eliminates need for external amplifier, reducing current consumption
 - Supports multiple audio formats for versatility
 
-**Note:** Typical earbuds have an impedance of 32Ω, which is well within the VS1053b's drive capability. The VS1053b uses a DC-coupled output with a 1.25V reference (GBUF), allowing direct headphone connection without coupling capacitors.
+**Power Supply Requirements:**
+
+The VS1053b requires two separate voltage rails:
+
+- **CVDD (1.8V):** Core voltage for internal processor and DSP. Requires stable, low-noise supply.
+- **IOVDD (3.3V):** Digital I/O voltage for SPI communication and control pins.
+
+The AP2112K-1.8 was selected for the CVDD rail due to its low dropout voltage and low-noise output, ensuring reliable audio decoding performance.
+
+**Headphone Output:**
+
+Typical earbuds have an impedance of 32Ω, which is well within the VS1053b's drive capability (minimum 16Ω load). The VS1053b uses a DC-coupled output with a 1.25V reference (GBUF), allowing direct headphone connection without coupling capacitors.
 
 ---
 
@@ -89,7 +156,7 @@ The ST7735 TFT display was selected for the following reasons:
 
 | Parameter | Value |
 |-----------|-------|
-| Resolution | 160x128 or 160x80 |
+| Resolution | 160x128 |
 | Interface | SPI |
 | Color Depth | 65K colors (RGB565) |
 | Operating Voltage | 3.3V |
@@ -114,3 +181,6 @@ The enclosure was designed using Tinkercad for ease of iteration.
 - Custom pockets for PCB and battery
 - Low-profile design fits comfortably in hand
 
+---
+
+## Power Distribution Summary
