@@ -55,3 +55,8 @@ Everything you need to build your own is available in this repository:
 - **Enclosure** — Tinkercad STL files for top and bottom case halves
 - **Bill of Materials** — Full parts list with component sources
 
+## Documentation
+
+For detailed technical documentation, including component selection, calculations, and design rationale, see:
+
+📄 [Technical Documentation](docs/TECHNICAL_DOCS.md)
