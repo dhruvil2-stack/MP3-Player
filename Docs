@@ -1,9 +1,115 @@
-DataSheets and Mathematical Computations done and stored here
-For the BQ24074 Chip, its components were chosen to supply a fast charging current of 1500 mAh.
-I_CHG = (K_ISET/R_ISET) => R_ISET = (K_ISET/I_CHG) = (890 A*Ohm / 1.5 A) = 593.33 A ≈ 590 A.
-| EN 1  | EN 2  |
-|-------|-------|
-|   0   |  0    |
-|   1   |  1    |
-|   0   |  1    |
-|   1   |  0    |
+
+**EN Pin Configuration:**
+
+The EN1 and EN2 pins provide input current limiting options, allowing the system to adapt to different USB power sources:
+
+| EN1 | EN2 | Input Current Limit |
+|-----|-----|---------------------|
+| 0   | 0   | USB 100mA (SDP)     |
+| 1   | 1   | USB 500mA           |
+| 0   | 1   | Adapter 1.3A        |
+| 1   | 0   | Adapter 1.5A        |
+
+### Voltage Regulation - AP2112K-3.3V and AP2112K-1.8V
+
+The AP2112K series LDOs were selected for voltage regulation based on the following specifications:
+
+| Parameter | Value |
+|-----------|-------|
+| Dropout Voltage | 250mV typical at 600mA load |
+| Output Current | Up to 600mA |
+| Package | SOT-23-5 |
+| Features | Enable pin, thermal protection, short-circuit protection |
+
+The 3.3V rail powers the ESP32, ST7735 display, and logic levels. The 1.8V rail provides power for the display's internal logic.
+
+**Selection Rationale:**
+
+- Low dropout voltage enables efficient operation from a 3.7V Li-ion battery while maintaining stable 3.3V output
+- 600mA output capacity sufficient for both ESP32 and display simultaneously
+- Enable pin allows controlled power sequencing and low-power standby modes
+- Built-in over-temperature and short-circuit protection enhance system reliability
+
+---
+
+## Microcontroller Selection - ESP32
+
+The ESP32 was selected as the main controller for the following reasons:
+
+**Advantages:**
+
+- Extensive library support for ST7735 TFT display drivers (ESP-IDF and Arduino frameworks)
+- Multiple SPI peripherals allow simultaneous communication with VS1053b, SD card, and display without bus contention
+- Sufficient processing power for metadata parsing, audio streaming control, and UI updates
+- Large community and extensive documentation for troubleshooting
+- Built-in Wi-Fi and Bluetooth (future expandability for wireless streaming or OTA updates)
+
+**Pin Allocation:**
+
+| Peripheral | Interface | ESP32 Pins |
+|------------|-----------|------------|
+| VS1053b | SPI | VSPI (MOSI, MISO, SCK, CS, DREQ, RST) |
+| SD Card | SPI | VSPI or HSPI |
+| ST7735 Display | SPI | VSPI (CS, DC, RST) |
+| Buttons | GPIO | Multiple input pins |
+| BQ24074 | GPIO | EN1, EN2, CHG status |
+
+---
+
+## Audio Decoder Selection - VS1053b
+
+The VS1053b was selected as the audio codec based on the following factors:
+
+**Key Specifications:**
+
+| Parameter | Value |
+|-----------|-------|
+| Formats Supported | MP3, AAC, Ogg Vorbis, WMA, FLAC, WAV, MIDI |
+| Interface | SPI |
+| Headphone Output | Direct drive (no external amp required) |
+| Operating Voltage | 3.3V |
+
+**Selection Rationale:**
+
+- Well-documented datasheet with comprehensive technical reference
+- Successfully prototyped on a breakout board prior to PCB integration
+- Integrated headphone amplifier drives headphones directly (load impedance ≥ 16Ω)
+- Eliminates need for external amplifier, reducing current consumption
+- Supports multiple audio formats for versatility
+
+**Note:** Typical earbuds have an impedance of 32Ω, which is well within the VS1053b's drive capability. The VS1053b uses a DC-coupled output with a 1.25V reference (GBUF), allowing direct headphone connection without coupling capacitors.
+
+---
+
+## Display Selection - ST7735
+
+The ST7735 TFT display was selected for the following reasons:
+
+**Key Specifications:**
+
+| Parameter | Value |
+|-----------|-------|
+| Resolution | 160x128 or 160x80 |
+| Interface | SPI |
+| Color Depth | 65K colors (RGB565) |
+| Operating Voltage | 3.3V |
+
+**Selection Rationale:**
+
+- Existing driver libraries available for ESP-IDF and Arduino
+- SPI interface minimizes pin count
+- Sufficient resolution for track metadata display
+- Color capability enables clear UI elements
+
+---
+
+## Enclosure Design - 3D Printed
+
+The enclosure was designed using Tinkercad for ease of iteration.
+
+**Design Specifications:**
+
+- Material: PLA
+- Assembly: Snap-fit (no screws or adhesives required)
+- Custom pockets for PCB and battery
+- Low-profile design fits comfortably in hand
