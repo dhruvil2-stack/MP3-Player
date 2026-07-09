@@ -20,7 +20,7 @@ The BQ24074 was selected as the battery charging IC due to its integrated power-
 
 $$I_{CHG} = \frac{K_{ISET}}{R_{ISET}}$$
 
-$$R_{ISET} = \frac{K_{ISET}}{I_{CHG}} = \frac{890\ \text{A}\cdot\Omega}{1.5\ \text{A}} = 593.33\ \Omega \approx 590\ \Omega$$
+$$R_{ISET} = \frac{K_{ISET}}{I_{CHG}} = \frac{890\ \text{A}\cdot\Omega}{0.80\ \text{A}} = 1.1125K\ \Omega \approx 1.1K\ \Omega$$
 
 **Battery Specification:**
 
@@ -29,8 +29,8 @@ $$R_{ISET} = \frac{K_{ISET}}{I_{CHG}} = \frac{890\ \text{A}\cdot\Omega}{1.5\ \te
 | Chemistry | Lithium-Ion (Li-ion) |
 | Nominal Voltage | 3.7V |
 | Maximum Voltage | 4.2V |
-| Capacity | 1000mAh |
-| Charging Current | 1.5A (Fast Charge) |
+| Capacity | 1500mAh |
+| Charging Current | 0.80A (Fast Charge) |
 
 **EN Pin Configuration:**
 
@@ -45,9 +45,9 @@ The EN1 and EN2 pins configure the input current limit based on the USB power so
 
 **Selected Configuration:**
 
-The BQ24074 is configured with **EN1 = 0** and **EN2 = 1**, setting the input current limit to **1.3A**. This configuration was chosen to:
+The BQ24074 is configured with **EN1 = 0** and **EN2 = 1**, setting the input current limit to **0.80A**. This configuration was chosen to:
 
-- Match the 1.5A fast-charge current while staying within safe limits
+- Keep charging time to be relativelty fast while staying within the safe limits of charging a lipo
 - Allow the BQ24074's power-path to manage battery charging and system power simultaneously
 - Provide adequate headroom for system operation while charging
 
@@ -66,7 +66,7 @@ The AP2112K series LDOs were selected for voltage regulation based on the follow
 
 | Rail | Voltage | Regulator | Supply | Purpose |
 |------|---------|-----------|--------|---------|
-| 3.3V | 3.3V | AP2112K-3.3 | 3.7V Li-ion | ESP32, ST7735 display, VS1053b IOVDD, SD card, logic levels |
+| 3.3V | 3.3V | AP2112K-3.3 | 3.7V Li-ion | ESP32, ST7735 display, VS1053b IOVDD/AVDD, SD card, logic levels |
 | 1.8V | 1.8V | AP2112K-1.8 | 3.7V Li-ion | VS1053b core voltage (CVDD) |
 
 **Selection Rationale:**
@@ -139,7 +139,7 @@ The VS1053b requires two separate voltage rails:
 
 - **CVDD (1.8V):** Core voltage for internal processor and DSP. Requires stable, low-noise supply.
 - **IOVDD (3.3V):** Digital I/O voltage for SPI communication and control pins.
-
+- **AVDD (3.3V):** Analog Power Supply 
 The AP2112K-1.8 was selected for the CVDD rail due to its low dropout voltage and low-noise output, ensuring reliable audio decoding performance.
 
 **Headphone Output:**
