@@ -180,7 +180,3 @@ The enclosure was designed using Tinkercad for ease of iteration.
 - Assembly: Snap-fit (no screws or adhesives required)
 - Custom pockets for PCB and battery
 - Low-profile design fits comfortably in hand
-
----
-
-## Power Distribution Summary
