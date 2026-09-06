@@ -1,6 +1,5 @@
 # Dhruvil's MP3 Player
 
-A compact, open-source MP3 player built from the ground up. From PCB design to firmware to 3D-printed enclosure, everything is open-source and ready for you to build your own.
 
 ---
 
