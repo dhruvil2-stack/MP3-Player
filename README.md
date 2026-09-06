@@ -50,7 +50,7 @@ Track metadata (song name, album, artist, duration) is parsed from the SD card a
 
 ## Enclosure
 
-The case is 3D-printed using Tinkercad and designed to snugly fit the PCB and battery. It uses a simple two-piece snap-fit design printed in PLA — no screws or adhesives required.
+The case is 3D-printed using Fusion360 and designed to snugly fit the PCB and battery. It uses a simple two-piece snap-fit design printed in PLA.
 
 ---
 
