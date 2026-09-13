@@ -66,8 +66,9 @@ The AP2112K series LDOs were selected for voltage regulation based on the follow
 
 | Rail | Voltage | Regulator | Supply | Purpose |
 |------|---------|-----------|--------|---------|
-| 3.3V | 3.3V | AP2112K-3.3 | 3.7V Li-ion | ESP32, ST7735 display, VS1053b IOVDD/AVDD, SD card, logic levels |
-| 1.8V | 1.8V | AP2112K-1.8 | 3.7V Li-ion | VS1053b core voltage (CVDD) |
+| 3.3V | 3.3V_A | AP2112K-3.3 | 3.7V Li-ion/USB 2.0 | ESP32, ST7735 display, SD card, Mechanical Switches |
+| 3.3V | 3.3V_D | AP2112K-3.3 | 3.7V Li-ion/USB 2.0 | VS1053b IOVDD/AVDD|
+| 1.8V | 1.8V | AP2112K-1.8 | 3.7V Li-ion/ USB 2.0 | VS1053b core voltage (CVDD) |
 
 **Selection Rationale:**
 
@@ -89,15 +90,15 @@ The 1.8V rail is critical for proper VS1053b operation. The AP2112K-1.8 provides
 
 ## Microcontroller Selection - ESP32
 
-The ESP32 was selected as the main controller for the following reasons:
+The ESP32-WROOM-32UE-N4 was selected as the main controller for the following reasons:
 
 **Advantages:**
 
 - Extensive library support for ST7735 TFT display drivers (ESP-IDF and Arduino frameworks)
 - Multiple SPI peripherals allow simultaneous communication with VS1053b, SD card, and display without bus contention
 - Sufficient processing power for metadata parsing, audio streaming control, and UI updates
-- Large community and extensive documentation for troubleshooting
-- Built-in Wi-Fi and Bluetooth (future expandability for wireless streaming or OTA updates)
+- Large community and extensive documentation for troubleshooting which helped during the prototyping phase
+- Learn how to make mixed signal pcb's with analog-digital components where a mistake can be identified by unnecessary buzzing/hissing sounds
 
 **Pin Allocation:**
 
@@ -129,6 +130,7 @@ The VS1053b was selected as the audio codec based on the following factors:
 
 - Well-documented datasheet with comprehensive technical reference
 - Successfully prototyped on a breakout board prior to PCB integration
+- Low power consumption resulting in a longer operating life
 - Integrated headphone amplifier drives headphones directly (load impedance ≥ 16Ω)
 - Eliminates need for external amplifier, reducing current consumption
 - Supports multiple audio formats for versatility
@@ -157,7 +159,7 @@ The ST7735 TFT display was selected for the following reasons:
 | Parameter | Value |
 |-----------|-------|
 | Resolution | 160x128 |
-| Interface | SPI |
+| Interface | SPI, I2C |
 | Color Depth | 65K colors (RGB565) |
 | Operating Voltage | 3.3V |
 
@@ -165,6 +167,7 @@ The ST7735 TFT display was selected for the following reasons:
 
 - Existing driver libraries available for ESP-IDF and Arduino
 - SPI interface minimizes pin count
+- Built in SD-card mounter which helped reduce board size
 - Sufficient resolution for track metadata display
 - Color capability enables clear UI elements
 
@@ -172,7 +175,7 @@ The ST7735 TFT display was selected for the following reasons:
 
 ## Enclosure Design - 3D Printed
 
-The enclosure was designed using Tinkercad for ease of iteration.
+The enclosure was designed using Fusion360 for ease of iteration, manufacturing and importing pcb files for proper measurements.
 
 **Design Specifications:**
 
